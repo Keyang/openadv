@@ -49,7 +49,7 @@ podTemplate(
       destTarget= curTarget.contains("blue")?"${name}-green":"${name}-blue"
       echo "Deploy to target: ${destTarget}"
       sh "oc tag kxiang-parks-dev/${name}:${devTag} kxiang-parks-prod/${name}:${prodTag} -n kxiang-parks-prod"
-      sh "oc set image dc/${destTarget} ${name}=${name}:${prodTag} --source=istag -n kxiang-parks-prod"
+      sh "oc set image dc/${destTarget} ${destTarget}=${name}:${prodTag} --source=istag -n kxiang-parks-prod"
       sh "oc rollout latest ${destTarget} -n kxiang-parks-prod"
     }
     stage("Swap B/G deployment"){

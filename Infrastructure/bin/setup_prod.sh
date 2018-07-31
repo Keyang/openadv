@@ -33,4 +33,4 @@ echo "Step 2 -- Setup 3 apps for production"
 oc create -f $APPS_TMPL -n $PROJ
 
 echo "Step 3 -- Add view permission to prod sa group"
-oc policy add-role-to-group view system:serviceaccounts:kxiang-parks-prod -n ${GUID}-parks-dev
+oc policy add-role-to-group view system:serviceaccount:kxiang-parks-prod -n ${GUID}-parks-dev
