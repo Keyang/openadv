@@ -13,3 +13,21 @@ echo "Setting up Parks Production Environment in project ${GUID}-parks-prod"
 # The Green services/routes need to be active initially to guarantee a successful grading pipeline run.
 
 # To be Implemented by Student
+PROJ=${GUID}-parks-prod
+MONGO_TMPL=./Infrastructure/templates/mongo-rs.yaml
+APPS_TMPL=./Infrastructure/templates/prod_apps.yaml
+
+# echo "Step 1 -- Create mongodb replica set with 3 instances"
+# oc create -f $MONGO_TMPL -n $PROJ
+
+# ./Infrastructure/bin/waitPodReady.sh mongodb-0 $PROJ
+# ./Infrastructure/bin/waitPodReady.sh mongodb-1 $PROJ
+# ./Infrastructure/bin/waitPodReady.sh mongodb-2 $PROJ
+
+echo "Step 2 -- Setup 3 apps for production"
+# Setup 5 dc
+# Setup 7 svc
+# setup 3 imagestreams
+# setup 5 routes
+
+oc create -f $APPS_TMPL -n $PROJ

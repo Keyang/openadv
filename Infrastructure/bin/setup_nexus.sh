@@ -29,3 +29,21 @@ echo "Setting up Nexus in project $GUID-nexus"
 # oc new-app -f ../templates/nexus.yaml --param .....
 
 # To be Implemented by Student
+TMPL=./Infrastructure/templates/nexus.yaml
+PROJ=$GUID-nexus
+
+echo "Step 1 -- Setup Nexus server"
+oc process -f $TMPL | oc create -n $PROJ -f -
+while : ; do
+  echo "Checking if Nexus is Ready..."
+  oc get pod -n $PROJ | grep -v deploy |grep "1/1.*Running"
+  [[ "$?" == "1" ]] || break
+  echo "...no. Sleeping 10 seconds."
+  sleep 10
+done
+
+echo "Step 2 -- Configure Nexus server"
+ROUTE=$(oc get route nexus3 --template='{{ .spec.host }}' -n ${PROJ})
+echo "Route ${ROUTE}"
+sleep 10
+./Infrastructure/bin/config_nexus.sh admin admin123 http://${ROUTE}

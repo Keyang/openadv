@@ -1,0 +1,127 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: nexus-template
+  annotations:
+    description: "Description"
+    iconClass: "icon-nexus"
+    tags: "nexus"
+objects:
+- kind: PersistentVolumeClaim
+  apiVersion: v1
+  metadata:
+    name: nexus
+    labels:
+      name: nexus
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      limits:
+        storage: 4Gi
+      requests:
+        storage: 4Gi
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    name: nexus
+    labels:
+      name: nexus
+  spec:
+    paused: false
+    selector:
+      name: nexus
+    replicas: 1
+    strategy:
+      type: Recreate
+    template:
+      metadata:
+        labels:
+          name: nexus
+        name: nexus
+      spec:
+        containers:
+        - image: sonatype/nexus3:latest
+          name: nexus
+          ports:
+          - containerPort: 8081
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 80
+            periodSeconds: 20
+            timeoutSeconds: 60
+            httpGet:
+              port: 8081
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 80
+            periodSeconds: 20
+            timeoutSeconds: 60
+            tcpSocket:
+              port: 8081
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
+            requests:
+              cpu: 1
+              memory: 1Gi
+          volumeMounts:
+          - mountPath: /nexus-data
+            name: nexus
+        volumes:
+        - persistentVolumeClaim:
+            claimName: nexus
+          name: nexus
+- kind: Service
+  apiVersion: v1
+  metadata:
+    creationTimestamp: null
+    labels:
+      name: nexus
+    name: nexus3
+  spec:
+    ports:
+    - port: 8081
+      protocol: TCP
+      targetPort: 8081
+    selector:
+      name: nexus
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- kind: Service
+  apiVersion: v1
+  metadata:
+    creationTimestamp: null
+    labels:
+      name: nexus
+    name: nexus-docker
+  spec:
+    ports:
+    - port: 5000
+      protocol: TCP
+      targetPort: 5000
+    selector:
+      name: nexus
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}   
+- kind: Route
+  apiVersion: v1
+  metadata:
+    labels:
+      name: nexus
+    name: nexus3
+  spec:
+    port:
+      targetPort: 8081
+    to:
+      kind: Service
+      name: nexus3
+      weight: 100
+parameters:
+labels:

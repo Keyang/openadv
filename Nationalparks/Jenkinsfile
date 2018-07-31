@@ -20,7 +20,11 @@ podTemplate(
     // You need to build the application in directory `Nationalparks`.
     // Also copy "../nexus_settings.xml" to your build directory
     // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
-
+    stage("Build"){
+      checkout scm
+      def t=sh returnStdout: true, script: 'ls'
+      echo t
+    }
   }
 }
 

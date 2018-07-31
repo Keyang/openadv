@@ -27,3 +27,26 @@ echo "Setting up Jenkins in project ${GUID}-jenkins from Git Repo ${REPO} for Cl
 # * CLUSTER: the base url of the cluster used (e.g. na39.openshift.opentlc.com)
 
 # To be Implemented by Student
+PROJ=${GUID}-jenkins
+SKOPEO_DOCKERFILE=./Infrastructure/templates/skopeo/Dockerfile
+JENKINS=./Infrastructure/templates/jenkins.yaml
+
+echo "Step 1 -- Create jenkins-ephemeral as we do not need persistent jenkins in this project"
+oc create -f ${JENKINS} -n ${PROJ}
+
+echo "Step 2 -- Create Skopeo Image based on maven image which will be used by project Jenkinsfile"
+cat $SKOPEO_DOCKERFILE |  oc new-build --strategy=docker --to=jenkins-slave-appdev --name=skopeo -n ${PROJ}  -D -
+echo "Build Config has created. Now attach to build pod -- wait image being built. why? not really needed.."
+sleep 5
+oc logs -f bc/skopeo -n ${PROJ}
+
+echo "Step 3 -- create pipelins"
+
+function newPipelineBuild {
+    echo "Setup pipeline: ${1} with Context Dir: ${2}"
+    oc new-build -e GUID=${GUID} -e CLUSTER=${CLUSTER} --strategy=pipeline ${REPO} --context-dir=${2} -n ${PROJ} --name=${1}
+    oc env bc/${1} GUID=$GUID CLUSTER=$CLUSTER -n ${PROJ}
+}
+newPipelineBuild mlbparks-pipeline MLBParks
+newPipelineBuild nationalparks-pipeline Nationalparks
+newPipelineBuild parksmap-pipeline ParksMap
