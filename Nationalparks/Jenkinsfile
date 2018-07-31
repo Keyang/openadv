@@ -53,7 +53,7 @@ podTemplate(
       sh "oc rollout latest ${destTarget} -n kxiang-parks-prod"
     }
     stage("Swap B/G deployment"){
-      sh "oc patch svc/${name} -n kxiang-parks-prod -p \"{\"spec\":{\"selector\":{\"deploymentconfig\":${destTarget}}}}\" "
+      sh "oc patch svc/${name} -n kxiang-parks-prod -p '{\"spec\":{\"selector\":{\"deploymentconfig\":\"${destTarget}\"}}}' "
     }
 
   }
