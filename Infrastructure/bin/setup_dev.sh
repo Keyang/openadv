@@ -23,3 +23,4 @@ oc create -f $MONGO_TMPL -n $PROJ
 
 echo "Step 2 -- Setup 3 apps"
 oc create -f $APPS_TMPL -n $PROJ
+

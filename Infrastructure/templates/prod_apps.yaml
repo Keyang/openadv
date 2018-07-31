@@ -160,7 +160,7 @@ items:
       targetPort: 8778
     selector:
       app: mlbparks
-      deploymentconfig: mlbparks-blue
+      deploymentconfig: mlbparks-green
     sessionAffinity: None
     type: ClusterIP
 - kind: Service
@@ -412,7 +412,7 @@ items:
       targetPort: 8778
     selector:
       app: nationalparks
-      deploymentconfig: nationalparks-blue
+      deploymentconfig: nationalparks-green
     sessionAffinity: None
     type: ClusterIP
 - kind: Service

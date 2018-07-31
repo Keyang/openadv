@@ -17,12 +17,12 @@ PROJ=${GUID}-parks-prod
 MONGO_TMPL=./Infrastructure/templates/mongo-rs.yaml
 APPS_TMPL=./Infrastructure/templates/prod_apps.yaml
 
-# echo "Step 1 -- Create mongodb replica set with 3 instances"
-# oc create -f $MONGO_TMPL -n $PROJ
+echo "Step 1 -- Create mongodb replica set with 3 instances"
+oc create -f $MONGO_TMPL -n $PROJ
 
-# ./Infrastructure/bin/waitPodReady.sh mongodb-0 $PROJ
-# ./Infrastructure/bin/waitPodReady.sh mongodb-1 $PROJ
-# ./Infrastructure/bin/waitPodReady.sh mongodb-2 $PROJ
+./Infrastructure/bin/waitPodReady.sh mongodb-0 $PROJ
+./Infrastructure/bin/waitPodReady.sh mongodb-1 $PROJ
+./Infrastructure/bin/waitPodReady.sh mongodb-2 $PROJ
 
 echo "Step 2 -- Setup 3 apps for production"
 # Setup 5 dc
@@ -31,3 +31,6 @@ echo "Step 2 -- Setup 3 apps for production"
 # setup 5 routes
 
 oc create -f $APPS_TMPL -n $PROJ
+
+echo "Step 3 -- Add view permission to prod sa group"
+oc policy add-role-to-group view system:serviceaccounts:kxiang-parks-prod -n ${GUID}-parks-dev

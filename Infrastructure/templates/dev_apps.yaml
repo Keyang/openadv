@@ -69,17 +69,7 @@ items:
         securityContext: {}
         terminationGracePeriodSeconds: 30
     test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - mlbparks
-        from:
-          kind: ImageStreamTag
-          name: mlbparks:latest
-          namespace: kxiang-parks-dev
-      type: ImageChange
+    triggers: []
 - kind: BuildConfig
   apiVersion: v1
   metadata:
@@ -227,17 +217,7 @@ items:
         securityContext: {}
         terminationGracePeriodSeconds: 30
     test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - nationalparks
-        from:
-          kind: ImageStreamTag
-          name: nationalparks:latest
-          namespace: kxiang-parks-dev
-      type: ImageChange
+    triggers: []
 - kind: BuildConfig
   apiVersion: v1
   metadata:
@@ -386,17 +366,7 @@ items:
         securityContext: {}
         terminationGracePeriodSeconds: 30
     test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - parksmap
-        from:
-          kind: ImageStreamTag
-          name: parksmap:latest
-          namespace: kxiang-parks-dev
-      type: ImageChange
+    triggers: []
 - kind: BuildConfig
   apiVersion: v1
   metadata:

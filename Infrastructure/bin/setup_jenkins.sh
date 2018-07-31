@@ -50,3 +50,7 @@ function newPipelineBuild {
 newPipelineBuild mlbparks-pipeline MLBParks
 newPipelineBuild nationalparks-pipeline Nationalparks
 newPipelineBuild parksmap-pipeline ParksMap
+
+echo "Step 4 -- Setup Permissions"
+oc policy add-role-to-user edit system:serviceaccounts:kxiang-jenkins:default -n ${GUID}-parks-dev
+oc policy add-role-to-user edit system:serviceaccounts:kxiang-jenkins:default -n ${GUID}-parks-prod
