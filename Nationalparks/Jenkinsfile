@@ -29,9 +29,9 @@ podTemplate(
     }
     def jarPath="${projectFolder}/target/nationalparks.jar"
     def pomPath="${projectFolder}/pom.xml"
-    def groupId    = getGroupIdFromPom("pom.xml")
-    def artifactId = getArtifactIdFromPom("pom.xml")
-    def version    = getVersionFromPom("pom.xml")
+    def groupId    = getGroupIdFromPom(pomPath)
+    def artifactId = getArtifactIdFromPom(pomPath)
+    def version    = getVersionFromPom(pomPath)
     def devTag  = "${version}-${BUILD_NUMBER}"
     def prodTag = "${version}"  
     stage("Deploy Dev"){
