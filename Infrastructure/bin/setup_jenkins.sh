@@ -47,8 +47,6 @@ function newPipelineBuild {
     echo "Setup pipeline: ${1} with Context Dir: ${2}"
     oc new-build -e GUID=${GUID} -e CLUSTER=${CLUSTER} --strategy=pipeline ${REPO} --context-dir=${2} -n ${PROJ} --name=${1}
     oc env bc/${1} GUID=$GUID CLUSTER=$CLUSTER -n ${PROJ}
-    sleep 2
-    oc cancel-build -n $PROJ bc/${1}
 }
 newPipelineBuild mlbparks-pipeline MLBParks
 newPipelineBuild nationalparks-pipeline Nationalparks
@@ -61,5 +59,8 @@ oc policy add-role-to-user edit system:serviceaccount:kxiang-jenkins:jenkins -n 
 oc policy add-role-to-user edit system:serviceaccount:kxiang-jenkins:jenkins -n ${GUID}-parks-prod
 
 echo "Step 4 -- Wait until jenkins ready"
-oc set resources dc/jenkins --requests=cpu=1,memory=1Gi --limits=cpu=2,memory=3Gi
+oc set resources dc/jenkins --requests=cpu=1,memory=1Gi --limits=cpu=2,memory=3Gi -n ${PROJ}
 ./Infrastructure/bin/waitPodReady.sh jenkins ${PROJ}
+oc cancel-build -n $PROJ bc/mlbparks-pipeline
+oc cancel-build -n $PROJ bc/nationalparks-pipeline
+oc cancel-build -n $PROJ bc/parksmap-pipeline

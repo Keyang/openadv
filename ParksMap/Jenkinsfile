@@ -56,8 +56,8 @@ podTemplate(
     }
     stage("Before Swap B/G"){
       echo "Wait pods readiness "
-      sh " ./Infrastructure/bin/waitPodReady.sh ${name} -n kxiang-parks-dev"
-      sh " ./Infrastructure/bin/waitPodReady.sh ${destTarget} -n kxiang-parks-prod"
+      sh " ./Infrastructure/bin/waitPodReady.sh ${name} kxiang-parks-dev"
+      sh " ./Infrastructure/bin/waitPodReady.sh ${destTarget} kxiang-parks-prod"
     }
     stage("Swap B/G deployment"){
       sh "oc patch route/${name} -n kxiang-parks-prod -p '{\"spec\":{\"to\":{\"name\":\"${destTarget}\"}}}' "
