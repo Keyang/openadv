@@ -22,12 +22,12 @@ podTemplate(
     // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
     def projectFolder="./Nationalparks"
     def name="nationalparks"
-    
+    def targetFile="${name}.jar"
     stage("Build"){
       checkout scm
       sh "mvn -s nexus_settings.xml -f ${projectFolder} clean package -DskipTests=true"
     }
-    def jarPath="${projectFolder}/target/nationalparks.jar"
+    def jarPath="${projectFolder}/target/${targetFile}"
     def pomPath="${projectFolder}/pom.xml"
     def groupId    = getGroupIdFromPom(pomPath)
     def artifactId = getArtifactIdFromPom(pomPath)
@@ -42,14 +42,16 @@ podTemplate(
     }
      def curTarget 
      def destTarget
+     def isGreen
     stage("Deploy Prod (B/G)"){
       echo "Detecting current target"
       curTarget = sh returnStdout: true, script:"oc get svc/${name} -n kxiang-parks-prod --template=\"{{.spec.selector.deploymentconfig}}\""
       echo "Current pointing target: ${curTarget}"
-      destTarget= curTarget.contains("blue")?"${name}-green":"${name}-blue"
+      isGreen=curTarget.contains("blue")
+      destTarget= isGreen?"${name}-green":"${name}-blue"
       echo "Deploy to target: ${destTarget}"
       sh "oc tag kxiang-parks-dev/${name}:${devTag} kxiang-parks-prod/${name}:${prodTag} -n kxiang-parks-prod"
-      sh "oc set image dc/${destTarget} ${destTarget}=${name}:${prodTag} --source=istag -n kxiang-parks-prod"
+      sh "oc set image dc/${destTarget} ${name}=${name}:${prodTag} --source=istag -n kxiang-parks-prod"
       sh "oc rollout latest ${destTarget} -n kxiang-parks-prod"
     }
     stage("Swap B/G deployment"){

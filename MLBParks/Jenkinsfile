@@ -1,4 +1,4 @@
-// Jenkinsfile for MLBParks
+// Jenkinsfile for NationalParks
 podTemplate(
   label: "skopeo-pod",
   cloud: "openshift",
@@ -17,10 +17,47 @@ podTemplate(
     echo "CLUSTER: ${CLUSTER}"
 
     // Your Pipeline Code goes here. Make sure to use the ${GUID} and ${CLUSTER} parameters where appropriate
-    // You need to build the application in directory `MLBParks`.
+    // You need to build the application in directory `Nationalparks`.
     // Also copy "../nexus_settings.xml" to your build directory
     // and replace 'GUID' in the file with your ${GUID} to point to >your< Nexus instance
- 
+    def projectFolder="./MLBParks"
+    def name="mlbparks"
+    def targetFile="${name}.war"
+    stage("Build"){
+      checkout scm
+      sh "mvn -s nexus_settings.xml -f ${projectFolder} clean package -DskipTests=true"
+    }
+    def jarPath="${projectFolder}/target/${targetFile}"
+    def pomPath="${projectFolder}/pom.xml"
+    def groupId    = getGroupIdFromPom(pomPath)
+    def artifactId = getArtifactIdFromPom(pomPath)
+    def version    = getVersionFromPom(pomPath)
+    def devTag  = "${version}-${BUILD_NUMBER}"
+    def prodTag = "${version}"  
+    stage("Deploy Dev"){
+      sh "oc start-build ${name} --from-file=${jarPath} -F -n kxiang-parks-dev"
+      sh "oc tag kxiang-parks-dev/${name}:latest kxiang-parks-dev/${name}:${devTag} -n kxiang-parks-dev"
+      sh "oc set image dc/${name} ${name}=${name}:${devTag} --source=istag -n kxiang-parks-dev"
+      sh "oc rollout latest ${name} -n kxiang-parks-dev"
+    }
+     def curTarget 
+     def destTarget
+     def isGreen
+    stage("Deploy Prod (B/G)"){
+      echo "Detecting current target"
+      curTarget = sh returnStdout: true, script:"oc get svc/${name} -n kxiang-parks-prod --template=\"{{.spec.selector.deploymentconfig}}\""
+      echo "Current pointing target: ${curTarget}"
+      isGreen=curTarget.contains("blue")
+      destTarget= isGreen?"${name}-green":"${name}-blue"
+      echo "Deploy to target: ${destTarget}"
+      sh "oc tag kxiang-parks-dev/${name}:${devTag} kxiang-parks-prod/${name}:${prodTag} -n kxiang-parks-prod"
+      sh "oc set image dc/${destTarget} ${name}=${name}:${prodTag} --source=istag -n kxiang-parks-prod"
+      sh "oc rollout latest ${destTarget} -n kxiang-parks-prod"
+    }
+    stage("Swap B/G deployment"){
+      sh "oc patch svc/${name} -n kxiang-parks-prod -p '{\"spec\":{\"selector\":{\"deploymentconfig\":\"${destTarget}\"}}}' "
+    }
+
   }
 }
 

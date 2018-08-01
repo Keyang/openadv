@@ -34,6 +34,8 @@ items:
           imagePullPolicy: Always
           name: mlbparks
           env:
+          - name: APPNAME
+            value: MLB Parks (Blue)
           - name: DB_HOST
             value: mongodb
           - name: DB_PORT
@@ -102,6 +104,8 @@ items:
           imagePullPolicy: Always
           name: mlbparks
           env:
+          - name: APPNAME
+            value: MLB Parks (Green)
           - name: DB_HOST
             value: mongodb
           - name: DB_PORT
@@ -241,6 +245,20 @@ items:
       name: mlbparks-blue
       weight: 100
     wildcardPolicy: None
+- kind: Route
+  apiVersion: v1
+  metadata:
+    labels:
+      app: mlbparks
+    name: mlbparks
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: mlbparks
+      weight: 100
+    wildcardPolicy: None
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -284,8 +302,10 @@ items:
         containers:
         - image: nationalparks:0.0
           imagePullPolicy: Always
-          name: nationalparks-green
+          name: nationalparks
           env:
+          - name: APPNAME
+            value: National Parks (Green)
           - name: DB_HOST
             value: mongodb
           - name: DB_PORT
@@ -352,8 +372,10 @@ items:
         containers:
         - image: nationalparks:0.0
           imagePullPolicy: Always
-          name: nationalparks-blue
+          name: nationalparks
           env:
+          - name: APPNAME
+            value: National Parks (Blue)
           - name: DB_HOST
             value: mongodb
           - name: DB_PORT
@@ -493,6 +515,20 @@ items:
       name: nationalparks-blue
       weight: 100
     wildcardPolicy: None    
+- kind: Route
+  apiVersion: v1
+  metadata:
+    labels:
+      app: nationalparks
+    name: nationalparks
+  spec:
+    port:
+      targetPort: 8080-tcp
+    to:
+      kind: Service
+      name: nationalparks
+      weight: 100
+    wildcardPolicy: None  
 - kind: ImageStream
   apiVersion: v1
   metadata:
@@ -509,13 +545,13 @@ items:
   metadata:
     labels:
       app: parksmap
-    name: parksmap
+    name: parksmap-blue
   spec:
     replicas: 1
     revisionHistoryLimit: 10
     selector:
       app: parksmap
-      deploymentconfig: parksmap
+      deploymentconfig: parksmap-blue
     strategy:
       activeDeadlineSeconds: 21600
       resources: {}
@@ -530,13 +566,86 @@ items:
       metadata:
         labels:
           app: parksmap
-          deploymentconfig: parksmap
+          deploymentconfig: parksmap-blue
       spec:
         containers:
         - image: parksmap:0.0
           imagePullPolicy: Always
           name: parksmap
           env:
+          - name: APPNAME
+            value: National Parks (Blue)  
+          - name: DB_HOST
+            value: mongodb
+          - name: DB_PORT
+            value: "27017"
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: database-user
+                name: mongodb
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: database-password
+                name: mongodb
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                key: database-name
+                name: mongodb
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          - containerPort: 8443
+            protocol: TCP
+          - containerPort: 8778
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers: []
+- kind: DeploymentConfig
+  apiVersion: v1
+  metadata:
+    labels:
+      app: parksmap
+    name: parksmap-green
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: parksmap
+      deploymentconfig: parksmap-green
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: parksmap
+          deploymentconfig: parksmap-green
+      spec:
+        containers:
+        - image: parksmap:0.0
+          imagePullPolicy: Always
+          name: parksmap
+          env:
+          - name: APPNAME
+            value: National Parks (Green)  
           - name: DB_HOST
             value: mongodb
           - name: DB_PORT
@@ -578,7 +687,7 @@ items:
   metadata:
     labels:
       app: parksmap
-    name: parksmap
+    name: parksmap-blue
   spec:
     ports:
     - name: 8080-tcp
@@ -595,7 +704,32 @@ items:
       targetPort: 8778
     selector:
       app: parksmap
-      deploymentconfig: parksmap
+      deploymentconfig: parksmap-blue
+    sessionAffinity: None
+    type: ClusterIP
+- kind: Service
+  apiVersion: v1
+  metadata:
+    labels:
+      app: parksmap
+    name: parksmap-green
+  spec:
+    ports:
+    - name: 8080-tcp
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    - name: 8443-tcp
+      port: 8443
+      protocol: TCP
+      targetPort: 8443
+    - name: 8778-tcp
+      port: 8778
+      protocol: TCP
+      targetPort: 8778
+    selector:
+      app: parksmap
+      deploymentconfig: parksmap-green
     sessionAffinity: None
     type: ClusterIP
 - kind: Route
@@ -609,7 +743,7 @@ items:
       targetPort: 8080-tcp
     to:
       kind: Service
-      name: parksmap
+      name: parksmap-green
       weight: 100
     wildcardPolicy: None
 - kind: ImageStream
