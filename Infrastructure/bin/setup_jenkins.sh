@@ -59,7 +59,7 @@ oc policy add-role-to-user edit system:serviceaccount:kxiang-jenkins:jenkins -n 
 oc policy add-role-to-user edit system:serviceaccount:kxiang-jenkins:jenkins -n ${GUID}-parks-prod
 
 echo "Step 4 -- Wait until jenkins ready"
-oc set resources dc/jenkins --requests=cpu=1,memory=1Gi --limits=cpu=2,memory=3Gi -n ${PROJ}
+oc set resources dc/jenkins --requests=cpu=1,memory=1Gi --limits=cpu=2,memory=2Gi -n ${PROJ}
 ./Infrastructure/bin/waitPodReady.sh jenkins ${PROJ}
 oc cancel-build -n $PROJ bc/mlbparks-pipeline
 oc cancel-build -n $PROJ bc/nationalparks-pipeline
