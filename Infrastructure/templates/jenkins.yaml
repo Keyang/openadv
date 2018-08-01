@@ -1,6 +1,15 @@
 apiVersion: v1
 items:
 - apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    annotations:
+      serviceaccounts.openshift.io/oauth-redirectreference.jenkins: '{"kind":"OAuthRedirectReference","apiVersion":"v1","reference":{"kind":"Route","name":"jenkins"}}'
+    creationTimestamp: null
+    labels:
+      app: jenkins-ephemeral
+    name: jenkins
+- apiVersion: v1
   kind: DeploymentConfig
   metadata:
     creationTimestamp: null
@@ -62,11 +71,11 @@ items:
             timeoutSeconds: 240
           resources: # Need a fast and happy Jenkins :D
             limits:
-              cpu: "2"
-              memory: 3Gi
+              cpu: "1"
+              memory: 2Gi
             requests:
               cpu: "1"
-              memory: 1.5Gi
+              memory: 1Gi
           securityContext:
             capabilities: {}
             privileged: false

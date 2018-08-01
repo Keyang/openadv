@@ -47,7 +47,7 @@ objects:
           - containerPort: 8081
           imagePullPolicy: IfNotPresent
           livenessProbe:
-            failureThreshold: 3
+            failureThreshold: 5
             initialDelaySeconds: 80
             periodSeconds: 20
             timeoutSeconds: 60

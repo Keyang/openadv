@@ -24,3 +24,5 @@ oc create -f $MONGO_TMPL -n $PROJ
 echo "Step 2 -- Setup 3 apps"
 oc create -f $APPS_TMPL -n $PROJ
 
+echo "Step 3 -- Setup permissions"
+oc policy add-role-to-user view --serviceaccount=default -n $PROJ
