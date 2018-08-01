@@ -40,6 +40,11 @@ podTemplate(
       sh "oc set image dc/${name} ${name}=${name}:${devTag} --source=istag -n kxiang-parks-dev"
       sh "oc rollout latest ${name} -n kxiang-parks-dev"
     }
+    stage("After Deploy Dev"){
+      echo "Wait dev build finish to release resources"
+      sh " ./Infrastructure/bin/waitPodReady.sh ${name} kxiang-parks-dev"
+    }
+    
      def curTarget 
      def destTarget
      def isGreen

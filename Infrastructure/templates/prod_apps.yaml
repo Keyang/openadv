@@ -614,7 +614,7 @@ items:
           name: parksmap
           env:
           - name: APPNAME
-            value: National Parks (Blue)  
+            value: ParksMap (Blue)
           - name: DB_HOST
             value: mongodb
           - name: DB_PORT
@@ -690,7 +690,7 @@ items:
           name: parksmap
           env:
           - name: APPNAME
-            value: National Parks (Green)  
+            value: ParksMap (Green)
           - name: DB_HOST
             value: mongodb
           - name: DB_PORT
