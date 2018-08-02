@@ -669,6 +669,12 @@ items:
             httpGet:
               path: /ws/appname/
               port: 8080
+                    readinessProbe:
+          livenessProbe:
+            initialDelaySeconds: 20
+            httpGet:
+              path: /ws/appname/
+              port: 8080
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
@@ -745,6 +751,11 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
+            initialDelaySeconds: 20
+            httpGet:
+              path: /ws/appname/
+              port: 8080
+          livenessProbe:
             initialDelaySeconds: 20
             httpGet:
               path: /ws/appname/
