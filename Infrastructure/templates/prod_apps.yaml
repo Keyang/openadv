@@ -76,12 +76,12 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/info/
               port: 8080
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/info/
               port: 8080
@@ -167,12 +167,12 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/info/
               port: 8080
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/info/
               port: 8080
@@ -388,12 +388,12 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/info/
               port: 8080
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/info/
               port: 8080
@@ -479,12 +479,12 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/info/
               port: 8080
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/info/
               port: 8080
@@ -695,12 +695,12 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/appname/
               port: 8080
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/appname/
               port: 8080
@@ -782,12 +782,12 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/appname/
               port: 8080
           livenessProbe:
-            initialDelaySeconds: 20
+            initialDelaySeconds: 60
             httpGet:
               path: /ws/appname/
               port: 8080
