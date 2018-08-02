@@ -96,11 +96,19 @@ items:
 
           ports:
           - containerPort: 27017
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            tcpSocket:
+              port: 27017
+            timeoutSeconds: 1
           # readinessProbe:
           #   exec:
           #     command: ["stat", "/tmp/initialized"]
           #   failureThreshold: 3
-          #   initialDelaySeconds: 3
+          #   initialDelaySeconds: 10
           #   periodSeconds: 10
           #   successThreshold: 1
           #   timeoutSeconds: 1
