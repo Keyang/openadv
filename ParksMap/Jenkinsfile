@@ -57,7 +57,7 @@ podTemplate(
       sh " ./Infrastructure/bin/waitPodReady.sh ${name} kxiang-parks-dev"
       echo "Copy image to Nexus Docker Registry"
       def token=readFile ('/var/run/secrets/kubernetes.io/serviceaccount/token')
-      sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds=default:${token} --dest-creds=admin:admin123 docker://docker-registry-default.apps.${CLUSTER}/kxiang-parks-dev/${name}:${devTag} docker://nexus-registry-kxiang-nexus.apps.muc.example.opentlc.com/kxiang-parks/dev/${name}:${devTag}"
+      sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds=default:${token} --dest-creds=admin:admin123 docker://docker-registry.default.svc:5000/${GUID}-parks-dev/${name}:${devTag} docker://nexus-docker.${GUID}-nexus.svc:5000/${GUID}-parks/dev/${name}:${devTag}"
 
     }
 

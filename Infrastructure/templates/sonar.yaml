@@ -56,7 +56,11 @@ items:
       activeDeadlineSeconds: 21600
       recreateParams:
         timeoutSeconds: 600
-      resources: {}
+      resources: 
+        limits:
+          memory: 256Mi
+        requests:
+          memory: 256Mi
       type: Recreate
     template:
       metadata:
@@ -145,7 +149,11 @@ items:
       activeDeadlineSeconds: 21600
       recreateParams:
         timeoutSeconds: 600
-      resources: {}
+      resources: 
+        limits:
+          memory: 256Mi
+        requests:
+          memory: 256Mi
       type: Recreate
     template:
       metadata:
@@ -163,6 +171,10 @@ items:
             value: jdbc:postgresql://postgresql/sonarqube
           image: wkulhanek/sonarqube:6.7.4
           imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: 1
           livenessProbe:
             failureThreshold: 3
             httpGet:
