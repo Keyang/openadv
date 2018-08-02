@@ -679,7 +679,6 @@ items:
             httpGet:
               path: /ws/appname/
               port: 8080
-                    readinessProbe:
           livenessProbe:
             initialDelaySeconds: 20
             httpGet:

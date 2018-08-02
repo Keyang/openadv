@@ -32,12 +32,12 @@ podTemplate(
     }
     stage('Code Analysis') {
       echo "Running Code Analysis"
-      sh "mvn -s nexus_settings.xml -f ${projectFolder} sonar:sonar -Dsonar.host.url=http://sonarqube-kxiang-sonarqube.apps.na39.openshift.opentlc.com"
+      sh "mvn -s nexus_settings.xml -f ${projectFolder} sonar:sonar -Dsonar.host.url=http://sonarqube-${GUID}-sonarqube.apps.${CLUSTER}"
     }
 
     stage('Publish to Nexus') {
       echo "Publish to Nexus"
-      sh "mvn -s nexus_settings.xml -f ${projectFolder} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3-kxiang-nexus.apps.na39.openshift.opentlc.com/repository/releases"
+      sh "mvn -s nexus_settings.xml -f ${projectFolder} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3-${GUID}-nexus.apps.${CLUSTER}/repository/releases"
     }
     def jarPath="${projectFolder}/target/${targetFile}"
     def pomPath="${projectFolder}/pom.xml"
@@ -47,14 +47,14 @@ podTemplate(
     def devTag  = "${version}-${BUILD_NUMBER}"
     def prodTag = "${version}"  
     stage("Deploy Dev"){
-      sh "oc start-build ${name} --from-file=${jarPath} -F -n kxiang-parks-dev"
-      sh "oc tag kxiang-parks-dev/${name}:latest kxiang-parks-dev/${name}:${devTag} -n kxiang-parks-dev"
-      sh "oc set image dc/${name} ${name}=${name}:${devTag} --source=istag -n kxiang-parks-dev"
-      sh "oc rollout latest ${name} -n kxiang-parks-dev"
+      sh "oc start-build ${name} --from-file=${jarPath} -F -n ${GUID}-parks-dev"
+      sh "oc tag ${GUID}-parks-dev/${name}:latest ${GUID}-parks-dev/${name}:${devTag} -n ${GUID}-parks-dev"
+      sh "oc set image dc/${name} ${name}=${name}:${devTag} --source=istag -n ${GUID}-parks-dev"
+      sh "oc rollout latest ${name} -n ${GUID}-parks-dev"
     }
     stage("After Deploy Dev"){
       echo "Wait dev build finish to release resources"
-      sh " ./Infrastructure/bin/waitPodReady.sh ${name} kxiang-parks-dev"
+      sh " ./Infrastructure/bin/waitPodReady.sh ${name} ${GUID}-parks-dev"
       echo "Copy image to Nexus Docker Registry"
       def token=readFile ('/var/run/secrets/kubernetes.io/serviceaccount/token')
       sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds=default:${token} --dest-creds=admin:admin123 docker://docker-registry.default.svc:5000/${GUID}-parks-dev/${name}:${devTag} docker://nexus-docker.${GUID}-nexus.svc:5000/${GUID}-parks/dev/${name}:${devTag}"
@@ -66,21 +66,21 @@ podTemplate(
      def isGreen
     stage("Deploy Prod"){
       echo "Detecting current target"
-      curTarget = sh returnStdout: true, script:"oc get route/${name} -n kxiang-parks-prod --template=\"{{.spec.to.name}}\""
+      curTarget = sh returnStdout: true, script:"oc get route/${name} -n ${GUID}-parks-prod --template=\"{{.spec.to.name}}\""
       echo "Current pointing target: ${curTarget}"
       isGreen=curTarget.contains("blue")
       destTarget= isGreen?"${name}-green":"${name}-blue"
       echo "Deploy to target: ${destTarget}"
-      sh "oc tag kxiang-parks-dev/${name}:${devTag} kxiang-parks-prod/${name}:${prodTag} -n kxiang-parks-prod"
-      sh "oc set image dc/${destTarget} ${name}=${name}:${prodTag} --source=istag -n kxiang-parks-prod"
-      sh "oc rollout latest ${destTarget} -n kxiang-parks-prod"
+      sh "oc tag ${GUID}-parks-dev/${name}:${devTag} ${GUID}-parks-prod/${name}:${prodTag} -n ${GUID}-parks-prod"
+      sh "oc set image dc/${destTarget} ${name}=${name}:${prodTag} --source=istag -n ${GUID}-parks-prod"
+      sh "oc rollout latest ${destTarget} -n ${GUID}-parks-prod"
     }
     stage("Before Swap B/G"){
       echo "Wait pods readiness "
-      sh " ./Infrastructure/bin/waitPodReady.sh ${destTarget} kxiang-parks-prod"
+      sh " ./Infrastructure/bin/waitPodReady.sh ${destTarget} ${GUID}-parks-prod"
     }
     stage("Swap B/G deployment"){
-      sh "oc patch route/${name} -n kxiang-parks-prod -p '{\"spec\":{\"to\":{\"name\":\"${destTarget}\"}}}' "
+      sh "oc patch route/${name} -n ${GUID}-parks-prod -p '{\"spec\":{\"to\":{\"name\":\"${destTarget}\"}}}' "
     }
 
   }
