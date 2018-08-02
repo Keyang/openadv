@@ -18,8 +18,10 @@ items:
       resources:
         requests:
           memory: 256Mi
+          cpu: 100m
         limits: 
           memory: 256Mi
+          cpu: 100m
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -102,8 +104,10 @@ items:
       resources:
         requests:
           memory: 256Mi
+          cpu: 100m
         limits: 
           memory: 256Mi
+          cpu: 100m
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -316,8 +320,10 @@ items:
       resources:
         requests:
           memory: 256Mi
+          cpu: 100m
         limits: 
           memory: 256Mi
+          cpu: 100m
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -400,8 +406,10 @@ items:
       resources:
         requests:
           memory: 256Mi
+          cpu: 100m
         limits: 
           memory: 256Mi
+          cpu: 100m
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -613,8 +621,10 @@ items:
       resources:
         requests:
           memory: 256Mi
+          cpu: 100m
         limits: 
           memory: 256Mi
+          cpu: 100m
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -699,8 +709,10 @@ items:
       resources:
         requests:
           memory: 256Mi
+          cpu: 100m
         limits: 
           memory: 256Mi
+          cpu: 100m
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
