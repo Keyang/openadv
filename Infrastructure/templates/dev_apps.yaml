@@ -403,6 +403,11 @@ items:
             httpGet:
               path: /ws/appname/
               port: 8080
+          livenessProbe:
+            initialDelaySeconds: 20
+            httpGet:
+              path: /ws/appname/
+              port: 8080
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
