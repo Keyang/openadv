@@ -18,3 +18,6 @@ TMPL=./Infrastructure/templates/sonar.yaml
 PROJ=$GUID-sonarqube
 # PROJ=kxiang-test
 oc create -f $TMPL -n $PROJ
+
+echo "Wait for sonarqube ready"
+./Infrastructure/bin/waitPodReady.sh sonarqube ${PROJ}
