@@ -80,6 +80,11 @@ items:
             httpGet:
               path: /ws/info/
               port: 8080
+          livenessProbe:
+            initialDelaySeconds: 20
+            httpGet:
+              path: /ws/info/
+              port: 8080
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
@@ -162,6 +167,11 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
+            initialDelaySeconds: 20
+            httpGet:
+              path: /ws/info/
+              port: 8080
+          livenessProbe:
             initialDelaySeconds: 20
             httpGet:
               path: /ws/info/
@@ -382,6 +392,11 @@ items:
             httpGet:
               path: /ws/info/
               port: 8080
+          livenessProbe:
+            initialDelaySeconds: 20
+            httpGet:
+              path: /ws/info/
+              port: 8080
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
@@ -464,6 +479,11 @@ items:
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           readinessProbe:
+            initialDelaySeconds: 20
+            httpGet:
+              path: /ws/info/
+              port: 8080
+          livenessProbe:
             initialDelaySeconds: 20
             httpGet:
               path: /ws/info/
