@@ -32,12 +32,12 @@ podTemplate(
     }
     stage('Code Analysis') {
       echo "Running Code Analysis"
-      sh "mvn -s nexus_settings.xml sonar:sonar -Dsonar.host.url=http://sonarqube-kxiang-sonarqube.apps.na39.openshift.opentlc.com"
+      sh "mvn -s nexus_settings.xml -f ${projectFolder} sonar:sonar -Dsonar.host.url=http://sonarqube-kxiang-sonarqube.apps.na39.openshift.opentlc.com"
     }
 
     stage('Publish to Nexus') {
       echo "Publish to Nexus"
-      sh "mvn -s nexus_settings.xml deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3-kxiang-nexus.apps.na39.openshift.opentlc.com/repository/releases"
+      sh "mvn -s nexus_settings.xml -f ${projectFolder} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3-kxiang-nexus.apps.na39.openshift.opentlc.com/repository/releases"
     }
     def jarPath="${projectFolder}/target/${targetFile}"
     def pomPath="${projectFolder}/pom.xml"

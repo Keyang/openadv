@@ -179,7 +179,7 @@ items:
             protocol: TCP
           readinessProbe:
             failureThreshold: 3
-            initialDelaySeconds: 10
+            initialDelaySeconds: 80
             periodSeconds: 20
             successThreshold: 1
             tcpSocket:
