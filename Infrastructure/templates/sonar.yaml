@@ -173,7 +173,7 @@ items:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              memory: 2Gi
+              memory: 3Gi
               cpu: 1
           livenessProbe:
             failureThreshold: 3
