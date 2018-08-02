@@ -15,7 +15,11 @@ items:
       deploymentconfig: mlbparks-blue
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -95,7 +99,11 @@ items:
       deploymentconfig: mlbparks-green
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -305,7 +313,11 @@ items:
       deploymentconfig: nationalparks-green
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -385,7 +397,11 @@ items:
       deploymentconfig: nationalparks-blue
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -594,7 +610,11 @@ items:
       deploymentconfig: parksmap-blue
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -670,7 +690,11 @@ items:
       deploymentconfig: parksmap-green
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%

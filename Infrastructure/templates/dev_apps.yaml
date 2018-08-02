@@ -15,7 +15,11 @@ items:
       deploymentconfig: mlbparks
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -175,7 +179,11 @@ items:
       deploymentconfig: nationalparks
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%
@@ -336,7 +344,11 @@ items:
       deploymentconfig: parksmap
     strategy:
       activeDeadlineSeconds: 21600
-      resources: {}
+      resources:
+        requests:
+          memory: 256Mi
+        limits: 
+          memory: 256Mi
       rollingParams:
         intervalSeconds: 1
         maxSurge: 25%

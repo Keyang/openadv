@@ -27,6 +27,18 @@ podTemplate(
       checkout scm
       sh "mvn -s nexus_settings.xml -f ${projectFolder} clean package -DskipTests=true"
     }
+    stage("Unit Test"){
+      sh "mvn -s nexus_settings.xml -f ${projectFolder} test "
+    }
+    stage('Code Analysis') {
+      echo "Running Code Analysis"
+      sh "mvn -s nexus_settings.xml sonar:sonar -Dsonar.host.url=http://sonarqube-kxiang-sonarqube.apps.na39.openshift.opentlc.com"
+    }
+
+    stage('Publish to Nexus') {
+      echo "Publish to Nexus"
+      sh "mvn -s nexus_settings.xml deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus3-kxiang-nexus.apps.na39.openshift.opentlc.com/repository/releases"
+    }
     def jarPath="${projectFolder}/target/${targetFile}"
     def pomPath="${projectFolder}/pom.xml"
     def groupId    = getGroupIdFromPom(pomPath)
@@ -43,11 +55,16 @@ podTemplate(
     stage("After Deploy Dev"){
       echo "Wait dev build finish to release resources"
       sh " ./Infrastructure/bin/waitPodReady.sh ${name} kxiang-parks-dev"
+      echo "Copy image to Nexus Docker Registry"
+      def token=readFile ('/var/run/secrets/kubernetes.io/serviceaccount/token')
+      sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds=default:${token} --dest-creds=admin:admin123 docker://docker-registry-default.apps.${CLUSTER}/kxiang-parks-dev/${name}:${devTag} docker://nexus-registry-kxiang-nexus.apps.muc.example.opentlc.com/kxiang-parks/dev/${name}:${devTag}"
+
     }
+
      def curTarget 
      def destTarget
      def isGreen
-    stage("Deploy Prod (B/G)"){
+    stage("Deploy Prod"){
       echo "Detecting current target"
       curTarget = sh returnStdout: true, script:"oc get route/${name} -n kxiang-parks-prod --template=\"{{.spec.to.name}}\""
       echo "Current pointing target: ${curTarget}"
